@@ -1,0 +1,29 @@
+Este conjunto de datos contiene información de una institución de educación superior sobre diversas variables relacionadas con estudiantes de pregrado, incluyendo datos demográficos, factores socioeconómicos y rendimiento académico, para investigar el impacto de estos factores en la deserción escolar y el éxito académico.
+
+Estado civil: Estado civil del estudiante. (Categórico)
+Modalidad de solicitud: Método de solicitud utilizado por el estudiante. (Categórico)
+Orden de solicitud: Orden en el que el estudiante solicitó la admisión. (Numérico)
+Curso: Curso que cursa el estudiante. (Categórico)
+Horario de asistencia: Indica si el estudiante asiste a clases durante el día o la noche. (Categórico)
+Título previo: Título obtenido por el estudiante antes de ingresar a la educación superior. (Categórico)
+Nacionalidad: Nacionalidad del estudiante. (Categórico)
+Título de la madre: Título de la madre del estudiante. (Categórico)
+Título del padre: Título del padre del estudiante. (Categórico)
+Ocupación de la madre: La ocupación de la madre del estudiante. (Categórico)
+Ocupación del padre: La ocupación del padre del estudiante. (Categórico)
+Desplazado: Indica si el estudiante es una persona desplazada. (Categórico)
+Necesidades educativas especiales: Indica si el estudiante tiene necesidades educativas especiales. (Categórico)
+Deudor: Indica si el estudiante tiene deudas. (Categórico)
+Matrícula al día: Indica si la matrícula del estudiante está al día. (Categórico)
+Género: El género del estudiante. (Categórico)
+Becario: Indica si el estudiante es becario. (Categórico)
+Edad al momento de la inscripción: La edad del estudiante al momento de la inscripción. (Numérico)
+Internacional: Indica si el estudiante es un estudiante internacional. (Categórico)
+
+Unidades curriculares 1.er semestre (acreditadas): Número de unidades curriculares acreditadas por el estudiante en el primer semestre. (Numérico)
+
+Unidades curriculares 1.er semestre (matriculadas): Número de unidades curriculares matriculadas por el estudiante en el primer semestre. (Numérico)
+
+Unidades curriculares 1.er semestre (evaluadas): Número de unidades curriculares evaluadas por el estudiante en el primer semestre. (Numérico)
+
+Unidades curriculares 1.er semestre (aprobadas): Número de unidades curriculares aprobadas por el estudiante en el primer semestre. (Numérico)
