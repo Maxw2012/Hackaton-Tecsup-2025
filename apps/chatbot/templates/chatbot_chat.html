@@ -1,0 +1,209 @@
+{% extends layout_path %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}Chatbot - Chat con IA{% endblock title %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h5 class="card-title m-0 me-2">
+          <i class="icon-base ri ri-robot-line icon-24px me-2"></i>
+          Chatbot con Gemini AI
+        </h5>
+        <a href="{% url 'chatbot:history' %}" class="btn btn-sm btn-outline-secondary">
+          <i class="icon-base ri ri-history-line icon-22px me-1"></i>
+          Ver Historial
+        </a>
+      </div>
+      <div class="card-body">
+        <!-- Chat Container -->
+        <div class="chat-container" style="height: 500px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; background-color: #f8f9fa;">
+          <div id="chat-messages" style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Mensajes aparecerán aquí -->
+            <div class="text-center text-muted py-4">
+              <i class="icon-base ri ri-chat-3-line icon-48px mb-2"></i>
+              <p class="mb-0">¡Hola! Soy tu asistente de IA. ¿En qué puedo ayudarte?</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="chat-input-area">
+          <form id="chat-form" class="d-flex gap-2">
+            {% csrf_token %}
+            <div class="flex-grow-1">
+              <input 
+                type="text" 
+                id="message-input" 
+                class="form-control" 
+                placeholder="Escribe tu mensaje aquí..." 
+                autocomplete="off"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-primary" id="send-button">
+              <i class="icon-base ri ri-send-plane-line icon-22px"></i>
+              Enviar
+            </button>
+          </form>
+          <div id="error-message" class="alert alert-danger mt-2" style="display: none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block page_js %}
+{{ block.super }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const chatForm = document.getElementById('chat-form');
+  const messageInput = document.getElementById('message-input');
+  const chatMessages = document.getElementById('chat-messages');
+  const sendButton = document.getElementById('send-button');
+  const errorMessage = document.getElementById('error-message');
+  const chatContainer = document.querySelector('.chat-container');
+
+  // Función para hacer scroll al final del chat
+  function scrollToBottom() {
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+
+  // Función para agregar mensaje al chat
+  function addMessage(text, isUser = false) {
+    // Eliminar mensaje de bienvenida si existe
+    const welcomeMsg = chatMessages.querySelector('.text-center.text-muted');
+    if (welcomeMsg) {
+      welcomeMsg.remove();
+    }
+
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `d-flex ${isUser ? 'justify-content-end' : 'justify-content-start'}`;
+    
+    const messageContent = document.createElement('div');
+    messageContent.className = `p-3 rounded ${isUser ? 'bg-primary text-white' : 'bg-white border'}`;
+    messageContent.style.maxWidth = '70%';
+    messageContent.style.wordWrap = 'break-word';
+    
+    const messageText = document.createElement('div');
+    messageText.textContent = text;
+    messageText.style.whiteSpace = 'pre-wrap';
+    
+    messageContent.appendChild(messageText);
+    messageDiv.appendChild(messageContent);
+    chatMessages.appendChild(messageDiv);
+    
+    scrollToBottom();
+  }
+
+  // Función para mostrar error
+  function showError(message) {
+    errorMessage.textContent = message;
+    errorMessage.style.display = 'block';
+    setTimeout(() => {
+      errorMessage.style.display = 'none';
+    }, 5000);
+  }
+
+  // Función para mostrar loading
+  function showLoading() {
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'd-flex justify-content-start';
+    loadingDiv.id = 'loading-message';
+    
+    const loadingContent = document.createElement('div');
+    loadingContent.className = 'p-3 rounded bg-white border';
+    loadingContent.innerHTML = '<i class="icon-base ri ri-loader-4-line icon-22px spin"></i> El bot está escribiendo...';
+    loadingContent.style.maxWidth = '70%';
+    
+    loadingDiv.appendChild(loadingContent);
+    chatMessages.appendChild(loadingDiv);
+    scrollToBottom();
+  }
+
+  // Función para ocultar loading
+  function hideLoading() {
+    const loadingMsg = document.getElementById('loading-message');
+    if (loadingMsg) {
+      loadingMsg.remove();
+    }
+  }
+
+  // Manejar envío del formulario
+  chatForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const message = messageInput.value.trim();
+    if (!message) {
+      return;
+    }
+
+    // Agregar mensaje del usuario
+    addMessage(message, true);
+    messageInput.value = '';
+    
+    // Deshabilitar botón mientras se procesa
+    sendButton.disabled = true;
+    sendButton.innerHTML = '<i class="icon-base ri ri-loader-4-line icon-22px spin"></i> Enviando...';
+    
+    // Mostrar loading
+    showLoading();
+
+    try {
+      const response = await fetch('{% url "chatbot:send_message" %}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({ message: message })
+      });
+
+      const data = await response.json();
+      
+      hideLoading();
+
+      if (data.success) {
+        addMessage(data.response, false);
+      } else {
+        showError(data.error || 'Error al procesar el mensaje');
+      }
+    } catch (error) {
+      hideLoading();
+      showError('Error de conexión. Por favor, intenta nuevamente.');
+      console.error('Error:', error);
+    } finally {
+      sendButton.disabled = false;
+      sendButton.innerHTML = '<i class="icon-base ri ri-send-plane-line icon-22px"></i> Enviar';
+      messageInput.focus();
+    }
+  });
+
+  // Permitir enviar con Enter
+  messageInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      chatForm.dispatchEvent(new Event('submit'));
+    }
+  });
+
+  // Focus en el input al cargar
+  messageInput.focus();
+});
+</script>
+<style>
+.spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+</style>
+{% endblock page_js %}
+
