@@ -61,6 +61,9 @@ urlpatterns = [
 
     # Chatbot urls
     path("", include("apps.chatbot.urls")),
+
+    # Prediction API urls
+    path("", include("apps.prediction.urls")),
 ]
 
 handler404 = SystemView.as_view(template_name="pages_misc_error.html", status=404)

@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     "apps.form_layouts",
     "apps.tables",
     "apps.chatbot",
+    "apps.prediction",
 ]
 
 MIDDLEWARE = [
