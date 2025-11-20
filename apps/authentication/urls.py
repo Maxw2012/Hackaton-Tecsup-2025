@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AuthView
+from .views import AuthView, register_view
 
 
 urlpatterns = [
@@ -10,7 +10,7 @@ urlpatterns = [
     ),
     path(
         "auth/register/",
-        AuthView.as_view(template_name="auth_register_basic.html"),
+        register_view,
         name="auth-register-basic",
     ),
     path(

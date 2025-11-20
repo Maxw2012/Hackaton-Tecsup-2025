@@ -19,7 +19,7 @@
       <div class="card p-sm-7 p-2">
         <!-- Logo -->
         <div class="app-brand justify-content-center mt-5">
-          <a href="{% url 'index' %}" class="app-brand-link gap-3">
+          <a href="{% url 'login' %}" class="app-brand-link gap-3">
             <span class="app-brand-logo demo">{% include 'partials/logo.html' %}</span>
             <span class="app-brand-text demo text-heading fw-semibold">{% get_theme_variables 'template_name' %}</span>
           </a>
@@ -29,7 +29,16 @@
           <h4 class="mb-1">Adventure starts here 🚀</h4>
           <p class="mb-5">Make your app management easy and fun!</p>
 
-          <form id="formAuthentication" class="mb-5" action="{% url 'index' %}">
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <form id="formAuthentication" class="mb-5" method="POST" action="{% url 'auth-register-basic' %}">
             {% csrf_token %}
             <div class="form-floating form-floating-outline mb-5">
               <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" autofocus />

@@ -18,12 +18,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from web_project.views import SystemView
+from apps.authentication.views import login_view
 
 urlpatterns = [
     path("admin/", admin.site.urls),
 
+    # Login en la raíz
+    path("", login_view, name="login"),
+
     # Dashboard urls
-    path("", include("apps.dashboards.urls")),
+    path("dashboard/", include("apps.dashboards.urls")),
 
     # layouts urls
     path("", include("apps.layouts.urls")),

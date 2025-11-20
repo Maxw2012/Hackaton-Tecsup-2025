@@ -51,6 +51,8 @@ ENVIRONMENT = os.environ.get("DJANGO_ENVIRONMENT", default="local")
 # Application definition
 
 INSTALLED_APPS = [
+    "admin_interface",
+    "colorfield",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -174,6 +176,11 @@ BASE_URL = os.environ.get("BASE_URL", default="http://127.0.0.1:8000")
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Authentication settings
+LOGIN_URL = '/'
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Template Settings
 # ------------------------------------------------------------------------------

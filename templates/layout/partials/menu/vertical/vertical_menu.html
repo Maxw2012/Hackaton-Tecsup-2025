@@ -2,7 +2,7 @@
   <!-- ! Hide app brand if navbar-full -->
   {% if not navbar_full %}
   <div class="app-brand demo">
-    <a href="{% url 'index' %}" class="app-brand-link">
+    <a href="{% url 'dashboard' %}" class="app-brand-link">
       <span class="app-brand-logo demo me-1">
         {% include 'partials/logo.html' %}
       </span>
@@ -16,14 +16,14 @@
 
   <ul class="menu-inner py-1">
 
-    <li class="menu-item {% if 'index' == request.resolver_match.url_name or '/dashbord/' in request.path %}active open{% endif %}">
+    <li class="menu-item {% if 'dashboard' == request.resolver_match.url_name or '/dashboard/' in request.path %}active open{% endif %}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon icon-base ri ri-home-smile-line"></i>
         <div class="text-truncate">Tableros</div>
       </a>
       <ul class="menu-sub">
-        <li class="menu-item {% if 'index' == request.resolver_match.url_name %}active{% endif %}">
-          <a href="{% url 'index' %}" class="menu-link">
+        <li class="menu-item {% if 'dashboard' == request.resolver_match.url_name %}active{% endif %}">
+          <a href="{% url 'dashboard' %}" class="menu-link">
             <div class="text-truncate">Analítica</div>
           </a>
         </li>

@@ -1,4 +1,5 @@
 from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from web_project import TemplateLayout
 
 
@@ -9,7 +10,10 @@ Refer to dashboards/urls.py file for more pages.
 """
 
 
-class DashboardsView(TemplateView):
+class DashboardsView(LoginRequiredMixin, TemplateView):
+    login_url = '/'
+    redirect_field_name = 'next'
+    
     # Predefined function
     def get_context_data(self, **kwargs):
         # A function to init the global layout. It is defined in web_project/__init__.py file

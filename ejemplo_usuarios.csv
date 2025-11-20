@@ -1,0 +1,5 @@
+username,email,password,first_name,last_name,is_staff,is_superuser
+juan.perez,juan@example.com,password123,Juan,Pérez,true,false
+maria.garcia,maria@example.com,password456,Maria,García,false,false
+carlos.lopez,carlos@example.com,password789,Carlos,López,true,false
+
