@@ -1,0 +1,17 @@
+{% extends layout_path %}
+
+{% load static %}
+
+{% block title %}Error{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; min-height: 80vh; text-align: center; padding: 2rem;">
+    <div>
+        <h1 style="font-size: 6rem; margin: 0; color: #333;">{{ status|default:"404" }}</h1>
+        <h2 style="color: #666; margin: 1rem 0;">Página no encontrada</h2>
+        <p style="color: #999; margin-bottom: 2rem;">Lo sentimos, no pudimos encontrar la página que estás buscando.</p>
+        <a href="{% url 'dashboard' %}" class="btn btn-primary">Volver al inicio</a>
+    </div>
+</div>
+{% endblock %}
+

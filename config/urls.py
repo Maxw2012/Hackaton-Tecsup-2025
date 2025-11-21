@@ -29,9 +29,6 @@ urlpatterns = [
     # Dashboard urls
     path("dashboard/", include("apps.dashboards.urls")),
 
-    # layouts urls
-    path("", include("apps.layouts.urls")),
-
     # Pages urls
     path("", include("apps.pages.urls")),
 
@@ -66,6 +63,6 @@ urlpatterns = [
     path("", include("apps.prediction.urls")),
 ]
 
-handler404 = SystemView.as_view(template_name="pages_misc_error.html", status=404)
-handler400 = SystemView.as_view(template_name="pages_misc_error.html", status=400)
-handler500 = SystemView.as_view(template_name="pages_misc_error.html", status=500)
+handler404 = SystemView.as_view(template_name="error.html", status=404)
+handler400 = SystemView.as_view(template_name="error.html", status=400)
+handler500 = SystemView.as_view(template_name="error.html", status=500)
