@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AuthView, register_view
+from .views import AuthView, register_view, logout_view
 
 
 urlpatterns = [
@@ -17,5 +17,10 @@ urlpatterns = [
         "auth/forgot_password/",
         AuthView.as_view(template_name="auth_forgot_password_basic.html"),
         name="auth-forgot-password-basic",
+    ),
+    path(
+        "auth/logout/",
+        logout_view,
+        name="auth-logout",
     ),
 ]

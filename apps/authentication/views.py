@@ -1,6 +1,6 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.urls import reverse
@@ -143,3 +143,12 @@ def register_view(request):
                 messages.error(request, f'Error al crear la cuenta: {str(e)}')
     
     return render(request, 'auth_register_basic.html', context)
+
+
+def logout_view(request):
+    """
+    Vista funcional de logout
+    """
+    logout(request)
+    messages.success(request, 'Has cerrado sesión exitosamente.')
+    return redirect('/')

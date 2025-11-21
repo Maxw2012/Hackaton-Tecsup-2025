@@ -1,10 +1,12 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from django.contrib.auth.models import User
 import json
 import joblib
 import pandas as pd
 from pathlib import Path
+from .models import StudentCharacteristics, DropoutPrediction
 
 # Ruta al modelo
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -104,15 +106,51 @@ def predict_dropout_risk(request):
             else:
                 risk_level = "Alto"
             
-            return JsonResponse({
+            # Guardar predicción si se proporciona user_id o si el usuario está autenticado
+            user_id = data.get("user_id")
+            save_prediction = data.get("save_prediction", False)
+            
+            prediction_saved = False
+            if save_prediction and user_id:
+                try:
+                    user = User.objects.get(id=user_id, is_staff=False)
+                    # Buscar características del estudiante
+                    try:
+                        characteristics = StudentCharacteristics.objects.get(user=user)
+                    except StudentCharacteristics.DoesNotExist:
+                        characteristics = None
+                    
+                    # Crear o actualizar predicción
+                    DropoutPrediction.objects.update_or_create(
+                        user=user,
+                        defaults={
+                            'student_characteristics': characteristics,
+                            'risk_score': float(risk_score),
+                            'risk_percentage': float(risk_score * 100),
+                            'risk_level': risk_level,
+                            'prediction': int(prediction),
+                            'prediction_label': 'Deserción' if prediction == 1 else 'No deserción',
+                        }
+                    )
+                    prediction_saved = True
+                except User.DoesNotExist:
+                    pass
+                except Exception as e:
+                    # No fallar la respuesta si hay error al guardar
+                    pass
+            
+            response_data = {
                 'success': True,
                 'risk_score': round(float(risk_score), 4),
                 'risk_percentage': round(float(risk_score * 100), 2),
                 'risk_level': risk_level,
                 'prediction': int(prediction),
                 'prediction_label': 'Deserción' if prediction == 1 else 'No deserción',
-                'message': f'Índice de riesgo de deserción: {risk_score:.2%} ({risk_level})'
-            })
+                'message': f'Índice de riesgo de deserción: {risk_score:.2%} ({risk_level})',
+                'prediction_saved': prediction_saved
+            }
+            
+            return JsonResponse(response_data)
             
         except Exception as e:
             return JsonResponse({

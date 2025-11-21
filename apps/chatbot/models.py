@@ -1,10 +1,19 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 class ChatMessage(models.Model):
     """
     Modelo para almacenar mensajes del chatbot
     """
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='chat_messages',
+        null=True,
+        blank=True,
+        verbose_name="Usuario"
+    )
     user_message = models.TextField(verbose_name="Mensaje del usuario")
     bot_response = models.TextField(verbose_name="Respuesta del bot")
     created_at = models.DateTimeField(default=timezone.now, verbose_name="Fecha de creación")

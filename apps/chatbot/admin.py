@@ -3,9 +3,9 @@ from .models import ChatMessage
 
 @admin.register(ChatMessage)
 class ChatMessageAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user_message_short', 'bot_response_short', 'model_used', 'created_at')
-    list_filter = ('model_used', 'created_at')
-    search_fields = ('user_message', 'bot_response')
+    list_display = ('id', 'user', 'user_message_short', 'bot_response_short', 'model_used', 'created_at')
+    list_filter = ('model_used', 'created_at', 'user')
+    search_fields = ('user_message', 'bot_response', 'user__username', 'user__email')
     readonly_fields = ('created_at',)
     date_hierarchy = 'created_at'
     

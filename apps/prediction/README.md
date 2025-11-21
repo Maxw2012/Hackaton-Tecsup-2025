@@ -1,14 +1,62 @@
 # API de Predicción de Deserción Estudiantil
 
-## Endpoint
+## Descripción
+
+Esta aplicación permite predecir el índice de riesgo de deserción estudiantil utilizando un modelo de machine learning (SVM) entrenado. Incluye modelos de base de datos para almacenar cursos, características de estudiantes y predicciones.
+
+## Modelos de Base de Datos
+
+### Curso
+Almacena información sobre los cursos disponibles. Permite identificar qué cursos tienen mayor probabilidad de deserción.
+
+### StudentCharacteristics
+Almacena todas las características de un estudiante necesarias para realizar la predicción. Está relacionado con el modelo `User` de Django (solo usuarios que no son staff).
+
+### DropoutPrediction
+Almacena las predicciones de deserción realizadas para cada estudiante, incluyendo el índice de riesgo, nivel de riesgo y la predicción.
+
+## Panel de Administración
+
+El panel de administración incluye:
+- Gestión de cursos
+- Gestión de características de estudiantes
+- Gestión de predicciones
+- **Botón para ejecutar predicción masiva**: En la lista de predicciones, hay un botón que permite ejecutar la predicción para todos los estudiantes registrados.
+
+## Seeder (Datos por Defecto)
+
+Para crear datos de prueba, ejecuta el siguiente comando:
+
+```bash
+python manage.py seed_prediction_data
+```
+
+Para eliminar datos existentes y crear nuevos:
+
+```bash
+python manage.py seed_prediction_data --clear
+```
+
+Este comando crea:
+- 10 cursos por defecto
+- 5 usuarios estudiantes de ejemplo
+- Características de estudiantes asociadas
+- Datos variados para pruebas
+
+## Endpoint de API
 
 **URL:** `http://127.0.0.1:8000/api/predict-dropout-risk/`  
 **Método:** `POST`  
 **Content-Type:** `application/json`
 
-## Descripción
+### Guardar Predicción
 
-Esta API permite predecir el índice de riesgo de deserción estudiantil utilizando un modelo de machine learning (RandomForestClassifier) entrenado.
+Para guardar la predicción en la base de datos, incluye los siguientes campos opcionales en el request:
+
+- `user_id` (int): ID del usuario estudiante
+- `save_prediction` (bool): `true` para guardar la predicción
+
+Si ambos campos están presentes y son válidos, la predicción se guardará automáticamente en la base de datos.
 
 ## Campos Requeridos
 
@@ -168,4 +216,49 @@ data = {
 response = requests.post(url, json=data)
 print(response.json())
 ```
+
+## Ejemplo de Request con Guardado de Predicción
+
+```json
+{
+    "marital_status": 1,
+    "application_mode": 2,
+    "application_order": 1,
+    "course": 33,
+    "daytime_evening_attendance": 1,
+    "previous_qualification": 3,
+    "nacionality": 1,
+    "mother_qualification": 2,
+    "father_qualification": 3,
+    "mother_occupation": 4,
+    "father_occupation": 5,
+    "gender": 1,
+    "age_at_enrollment": 20,
+    "user_id": 1,
+    "save_prediction": true
+}
+```
+
+## Migraciones
+
+Después de crear los modelos, ejecuta las migraciones:
+
+```bash
+python manage.py makemigrations prediction
+python manage.py migrate
+```
+
+## Uso del Panel de Administración
+
+1. Accede al panel de administración: `http://127.0.0.1:8000/admin/`
+2. Navega a **Predicción > Predicciones de deserción**
+3. Haz clic en el botón **"Ejecutar Predicción para Todos los Estudiantes"**
+4. El sistema procesará todas las predicciones y mostrará un resumen de resultados
+
+## Notas Importantes
+
+- Los usuarios con `is_staff=True` no son considerados estudiantes
+- Solo los usuarios con `is_staff=False` pueden tener características y predicciones asociadas
+- El modelo de machine learning debe estar ubicado en: `análisis/svm_model.pkl`
+- Las predicciones se pueden actualizar ejecutando nuevamente la predicción para el mismo estudiante
 

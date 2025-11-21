@@ -1,0 +1,12 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls static %}
+
+{% block object-tools-items %}
+    {{ block.super }}
+    <li>
+        <a href="{% url 'admin:prediction_dropoutprediction_predict_all' %}" class="addlink" onclick="return confirm('¿Está seguro de que desea ejecutar la predicción para todos los estudiantes? Esto puede tardar varios minutos.');">
+            🎯 Ejecutar Predicción para Todos los Estudiantes
+        </a>
+    </li>
+{% endblock %}
+
